@@ -38,11 +38,13 @@ double DFT::percentageInFrequencyRange() {
 
 double DFT::getIntensityRange() {
     double intensity = 0;
+    double total_intensity = 0;
     for (unsigned int k = 0; k < N; ++k) {
         double frequency = dft[k];
         if (frequency >= LOWERBOUND && frequency <= UPPERBOUND) {
             intensity += abs(dft[k]);
         }
+        total_intensity += abs(dft[k]);
     }
-    return intensity;
+    return intensity / total_intensity * 100;
 }
