@@ -1,10 +1,5 @@
 #include "display.h"
 
-void setUpNeoPixels() {
-    CircuitPlayground.begin();
-    CircuitPlayground.setBrightness(20);
-}
-
 
 void lightNeoPixel(uint8_t pixel, uint8_t color) {
     switch (color) {
@@ -63,9 +58,11 @@ void displayPercent(uint8_t percent){
     uint8_t val = percent / 5;
 
     if(val < 11) {
+        CircuitPlayground.setBrightness(20);
         greenYellowPattern(val);
     }
     else {
+        CircuitPlayground.setBrightness(255);
         yellowRedPattern(val - 10);
     }
 }

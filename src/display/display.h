@@ -4,8 +4,6 @@
 #include <Arduino.h>
 #include <Adafruit_CircuitPlayground.h>
 
-void setUpNeoPixels();
-
 // pixel value cannot be greater than 9
 // color options: 
 // red - 2
