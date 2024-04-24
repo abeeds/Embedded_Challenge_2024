@@ -50,19 +50,18 @@ void yellowRedPattern(uint8_t num_red) {
 }
 
 
-void displayPercent(double percent){
-    if(percent > 100) {
-        Serial.println("Value is greater than 100%.");
+void displayPercent(double frequency, double intensity){
+    if(frequency > 100) {
+        Serial.println("Frequency is greater than 100%.");
         return;
     }
-    uint8_t val = percent / 5;
+    CircuitPlayground.setBrightness(30 + (225 * (intensity / 100)));
 
+    uint8_t val = frequency / 5;
     if(val < 11) {
-        CircuitPlayground.setBrightness(20);
         greenYellowPattern(val);
     }
     else {
-        CircuitPlayground.setBrightness(255);
         yellowRedPattern(val - 10);
     }
 }
