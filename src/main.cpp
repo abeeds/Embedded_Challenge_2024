@@ -1,6 +1,21 @@
 #include <Arduino.h>
+#include <Adafruit_CircuitPlayground.h>
 #include "./display/display.h"
+#include "./DFT/dft.h"
 
+int i = 0;
+const int windowSize = 3; // Have a window of 3 seconds to collect data
+const int SR = 20; // Sample rate of 50 Hz
+int n = windowSize * SR;
+double accelerometerData[windowSize * SR];
+
+// write function declarations here:
+void readAccelerometerData();
+float calculateNetAcceleration();
+
+float calculateNetAcceleration(float X, float Y, float Z) {
+  return sqrt(X * X + Y * Y + Z * Z);
+}
 
 void setup() {
   Serial.begin(9600);
@@ -8,21 +23,30 @@ void setup() {
 }
 
 void loop() {
-  // this is all just test code.
-  // feel free to delete.
-  // to try it, type a number into the serial monitor
-  int x = 0;
-  int y;
-  if (Serial.available() > 0) {
-    x = Serial.read();
+
+  float X = CircuitPlayground.motionX();
+  float Y = CircuitPlayground.motionY();
+  float Z = CircuitPlayground.motionZ();
+
+  double netAcceleration = calculateNetAcceleration(X, Y, Z);
+  Serial.println(netAcceleration);
+
+  accelerometerData[i] = netAcceleration;
+
+  i++;
+  if(i == n) {
+    DFT dft(n, accelerometerData, SR);
+    double frequency_range = dft.percentageInFrequencyRange();
+    double intensity_range = dft.getIntensityRange();
+    displayPercent(frequency_range, intensity_range);
+    i = 0;
   }
 
-  if(x >= 48 && x <= 57){
-    y = (x - 47) * 10;
-    Serial.print("Displaying ");
-    Serial.print(y);
-    Serial.println("%");
+  Serial.print(X);
+  Serial.print(",");
+  Serial.print(Y);
+  Serial.print(",");
+  Serial.println(Z);
 
-    displayPercent(y);
-  }
+  delay(SR);
 }

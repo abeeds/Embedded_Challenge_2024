@@ -1,7 +1,7 @@
 #include "DFT.h"
 #include <Arduino.h>
 
-DFT::DFT(unsigned int size, const double* inputArray, const int samplingRate) {
+DFT::DFT(int size, double* inputArray, int samplingRate) {
     N = size;
     input = new double[N];
     dft = new double[N];
@@ -13,6 +13,7 @@ DFT::DFT(unsigned int size, const double* inputArray, const int samplingRate) {
 
 double* DFT::recursiveDFT() {
     for (unsigned int k = 0; k < N; ++k) {
+        Serial.println(k);
         dft[k] = 0;
         for (unsigned int n = 0; n < N; ++n) {
             double theta = 2 * M_PI * n * k / N;
