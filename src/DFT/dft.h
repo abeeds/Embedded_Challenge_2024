@@ -4,8 +4,8 @@
 class DFT {
 private:
     int N;
-    double* input;
-    double* dft;
+    double input[60];
+    double dft[60];
     unsigned int samplingRate;
     int LOWERBOUND = 3;
     int UPPERBOUND = 6;

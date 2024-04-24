@@ -29,7 +29,6 @@ void loop() {
   float Z = CircuitPlayground.motionZ();
 
   double netAcceleration = calculateNetAcceleration(X, Y, Z);
-  Serial.println(netAcceleration);
 
   accelerometerData[i] = netAcceleration;
 
@@ -38,15 +37,18 @@ void loop() {
     DFT dft(n, accelerometerData, SR);
     double frequency_range = dft.percentageInFrequencyRange();
     double intensity_range = dft.getIntensityRange();
+    Serial.print(intensity_range);
+    Serial.print(" ");
+    Serial.println(frequency_range);
     displayPercent(frequency_range, intensity_range);
     i = 0;
   }
 
-  Serial.print(X);
-  Serial.print(",");
-  Serial.print(Y);
-  Serial.print(",");
-  Serial.println(Z);
+  // Serial.print(X);
+  // Serial.print(",");
+  // Serial.print(Y);
+  // Serial.print(",");
+  // Serial.println(Z);
 
   delay(SR);
 }
