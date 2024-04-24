@@ -25,6 +25,6 @@ void yellowRedPattern(uint8_t num_red);
 // from 0-50% the lights will be from green to yellow
 // from 51-100% the lights will be from yellow to red
 // percent should be a value from 0 - 100
-void displayPercent(double percent);
+void displayPercent(double frequency, double intensity);
 
 #endif
