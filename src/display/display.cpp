@@ -50,7 +50,7 @@ void yellowRedPattern(uint8_t num_red) {
 }
 
 
-void displayPercent(uint8_t percent){
+void displayPercent(double percent){
     if(percent > 100) {
         Serial.println("Value is greater than 100%.");
         return;
