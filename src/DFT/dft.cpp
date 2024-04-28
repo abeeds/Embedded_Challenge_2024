@@ -47,3 +47,11 @@ double DFT::getIntensityRange() {
     }
     return intensity / total_intensity * 100;
 }
+
+// Plot the FFT data using teleplot
+void DFT::plotData() {
+    for (unsigned int k = 0; k < N; ++k) {
+        Serial.print(">FFT");
+        Serial.println(dft[k]);
+    }
+}

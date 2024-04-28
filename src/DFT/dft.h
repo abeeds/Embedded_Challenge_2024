@@ -18,6 +18,8 @@ public:
     double percentageInFrequencyRange();
 
     double getIntensityRange();
+
+    void plotData();
 };
 
 #endif // DFT_H
