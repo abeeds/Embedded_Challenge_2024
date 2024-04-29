@@ -9,17 +9,22 @@ DFT::DFT(int size, double* inputArray, int samplingRate) {
     recursiveDFT();
 }
 
-double* DFT::recursiveDFT() {
+void DFT::recursiveDFT() {
     for (unsigned int k = 0; k < N; ++k) {
-        dft[k] = 0;
+        dftr[k] = 0;
+        dfti[k] = 0;
         for (unsigned int n = 0; n < N; ++n) {
             double theta = 2 * M_PI * n * k / N;
-            dft[k] += input[n] * cos(theta);
+            dftr[k] += input[n] * cos(theta);
+            dfti[k] -= input[n] * sin(theta);
         }
-        dft[k] *= samplingRate / N;
+        dft[k] = sqrt(sq(dftr[k]) + sq(dfti[k])) * samplingRate / N;
     }
-    return dft;
-    
+    for (unsigned int i = 0; i < N; ++i) {
+        Serial.print(">FFT:");
+        Serial.println(dft[i]);
+    }
+    Serial.println();
 }
 
 double DFT::percentageInFrequencyRange() {

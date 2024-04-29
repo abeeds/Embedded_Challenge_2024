@@ -5,7 +5,7 @@
 
 int i = 0;
 const int windowSize = 3; // Have a window of 3 seconds to collect data
-const int SR = 20; // Sample rate of 50 Hz
+const int SR = 20; // Sample rate of 20 Hz
 int n = windowSize * SR;
 double accelerometerData[windowSize * SR];
 
@@ -50,5 +50,6 @@ void loop() {
   // Serial.print(",");
   // Serial.println(Z);
 
+  //also isnt SR should be 1 / SR * 1000
   delay(SR);
 }
