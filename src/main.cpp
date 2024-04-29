@@ -28,6 +28,13 @@ void loop() {
   float Y = CircuitPlayground.motionY();
   float Z = CircuitPlayground.motionZ();
 
+  // Serial.print(X);
+  // Serial.print(",");
+  // Serial.print(Y);
+  // Serial.print(",");
+  // Serial.println(Z);
+  // delay(1000);
+
   double netAcceleration = calculateNetAcceleration(X, Y, Z);
 
   accelerometerData[i] = netAcceleration;
@@ -37,10 +44,13 @@ void loop() {
     DFT dft(n, accelerometerData, SR);
     double frequency_range = dft.percentageInFrequencyRange();
     double intensity_range = dft.getIntensityRange();
-    Serial.print(intensity_range);
-    Serial.print(" ");
-    Serial.println(frequency_range);
+    // Serial.print(intensity_range);
+    // Serial.print(" ");
+    // Serial.println(frequency_range);
     displayPercent(frequency_range, intensity_range);
+
+    // Graph the FFT data using teleplot
+    dft.plotData();
     i = 0;
   }
 
