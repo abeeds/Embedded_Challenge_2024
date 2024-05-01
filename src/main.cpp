@@ -69,6 +69,16 @@ ISR(TIMER0_COMPA_vect) {
   accelerometerData[i] = netAcceleration;
 
   i++;
+  Serial.println(X);
+  // Serial.print(",");
+  // Serial.print(Y);
+  // Serial.print(",");
+  // Serial.println(Z);
+
+  //also isnt SR should be 1 / SR * 1000
+}
+
+void loop() {
   if(i == n) {
     DFT dft(n, accelerometerData, SR);
     double frequency_range = dft.percentageInFrequencyRange();
@@ -82,17 +92,4 @@ ISR(TIMER0_COMPA_vect) {
     dft.plotData();
     i = 0;
   }
-
-  // Serial.print(X);
-  // Serial.print(",");
-  // Serial.print(Y);
-  // Serial.print(",");
-  // Serial.println(Z);
-
-  //also isnt SR should be 1 / SR * 1000
-  delay(SR);
-}
-
-void loop() {
-  //pass
 }
