@@ -4,13 +4,13 @@
 class DFT {
 private:
     int N;
-    double input[60];
-    double dft[60];
-    double dftr[60];
-    double dfti[60];
+    double input[300];
+    double dft[300];
+    double dftr[300];
+    double dfti[300];
     unsigned int samplingRate;
     int LOWERBOUND = 3;
-    int UPPERBOUND = 6;
+    int UPPERBOUND = 8;
 
     void recursiveDFT();
 public:

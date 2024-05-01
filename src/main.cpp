@@ -5,7 +5,7 @@
 
 int i = 0;
 const int windowSize = 3; // Have a window of 3 seconds to collect data
-const int SR = 20; // Sample rate of 20 Hz
+const int SR = 100; // Sample rate of 100 Hz
 int n = windowSize * SR;
 double accelerometerData[windowSize * SR];
 
@@ -25,12 +25,13 @@ void setupTimer() {
   // CTC mode with OCRA as TOP -> WGM02 = 0, WGM01 = 1, WGM00 = 0
   
   // Setup TCCR0B register
-  TCCR0B = 0;
+  TCCR0B = (1 << CS02) | (1 << CS00);
   // FOC0A = 0, FOC0B = 0
   // WGM02 = 0
+  // Use a clock prescaler of 1024 -> CS02 = 1, CS01 = 0, CS00 = 1
 
   // Setup the OCR0A register
-  OCR0A = 249; // 50 ms
+  OCR0A = 78; // 50 ms
 
   // Setup the TIMSK0 register
   TIMSK0 = (1 << OCIE0A);
