@@ -16,6 +16,7 @@ void setupTimer();
 
 
 void setup() {
+  sei();
   Serial.begin(9600);
   CircuitPlayground.begin();
 
@@ -26,6 +27,7 @@ void setup() {
 
 
 ISR(TIMER0_COMPA_vect) {
+  Serial.println("HI");
   // This service routine will be called every 50 ms
   // We will use this to sample the accelerometer data
   float X = CircuitPlayground.motionX();
@@ -44,7 +46,6 @@ ISR(TIMER0_COMPA_vect) {
   accelerometerData[i] = netAcceleration;
 
   i++;
-  Serial.println(X);
   // Serial.print(",");
   // Serial.print(Y);
   // Serial.print(",");
@@ -90,7 +91,7 @@ void setupTimer() {
 
   // Configure External Interrupts
   EICRA  = (1 << ISC30); // config for any edge
-  EIMSK |= (1 << INTF3); // enable interrupt
+  EIMSK |= (1 << INT3); // enable interrupt
 
   // Setup the OCR0A register
   OCR0A = 78; // 50 ms
