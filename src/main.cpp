@@ -9,35 +9,10 @@ const int SR = 100; // Sample rate of 100 Hz
 int n = windowSize * SR;
 double accelerometerData[windowSize * SR];
 
+
 // write function declarations here:
 float calculateNetAcceleration(float X, float Y, float Z);
 void setupTimer();
-
-float calculateNetAcceleration(float X, float Y, float Z) {
-  return sqrt(X * X + Y * Y + Z * Z);
-}
-
-void setupTimer() {
-  // Setup TCCR0A register
-  TCCR0A = (1 << COM0A1) | (1 << WGM01);
-  // Clear OC0A on compare match -> COM0A1 = 1, COM0A0 = 0
-  // Disconnect OC0B - Normal Port operation -> COM0B1 = 0, COM0B0 = 0
-  // CTC mode with OCRA as TOP -> WGM02 = 0, WGM01 = 1, WGM00 = 0
-  
-  // Setup TCCR0B register
-  TCCR0B = (1 << CS02) | (1 << CS00);
-  // FOC0A = 0, FOC0B = 0
-  // WGM02 = 0
-  // Use a clock prescaler of 1024 -> CS02 = 1, CS01 = 0, CS00 = 1
-
-  // Setup the OCR0A register
-  OCR0A = 78; // 50 ms
-
-  // Setup the TIMSK0 register
-  TIMSK0 = (1 << OCIE0A);
-  // Enable Compare Match A Interrupt -> OCIE0A = 1
-  
-}
 
 
 void setup() {
@@ -92,4 +67,36 @@ void loop() {
     dft.plotData();
     i = 0;
   }
+}
+
+
+float calculateNetAcceleration(float X, float Y, float Z) {
+  return sqrt(X * X + Y * Y + Z * Z);
+}
+
+
+void setupTimer() {
+  // Setup TCCR0A register
+  TCCR0A = (1 << COM0A1) | (1 << WGM01);
+  // Clear OC0A on compare match -> COM0A1 = 1, COM0A0 = 0
+  // Disconnect OC0B - Normal Port operation -> COM0B1 = 0, COM0B0 = 0
+  // CTC mode with OCRA as TOP -> WGM02 = 0, WGM01 = 1, WGM00 = 0
+  
+  // Setup TCCR0B register
+  TCCR0B = (1 << CS02) | (1 << CS00);
+  // FOC0A = 0, FOC0B = 0
+  // WGM02 = 0
+  // Use a clock prescaler of 1024 -> CS02 = 1, CS01 = 0, CS00 = 1
+
+  // Configure External Interrupts
+  EICRA  = (1 << ISC30); // config for any edge
+  EIMSK |= (1 << INTF3); // enable interrupt
+
+  // Setup the OCR0A register
+  OCR0A = 78; // 50 ms
+
+  // Setup the TIMSK0 register
+  TIMSK0 = (1 << OCIE0A);
+  // Enable Compare Match A Interrupt -> OCIE0A = 1
+  
 }
