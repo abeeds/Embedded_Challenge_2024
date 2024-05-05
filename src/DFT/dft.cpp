@@ -1,7 +1,7 @@
 #include "DFT.h"
 #include <Arduino.h>
 
-DFT::DFT(int size, double* inputArray, int samplingRate) {
+DFT::DFT(const int size, volatile double* inputArray, int samplingRate) {
     N = size;
     for (unsigned int i = 0; i < N; ++i) {
         input[i] = inputArray[i];
@@ -20,11 +20,11 @@ void DFT::recursiveDFT() {
         }
         dft[k] = sqrt(sq(dftr[k]) + sq(dfti[k])) * samplingRate / N;
     }
-    for (unsigned int i = 0; i < N; ++i) {
-        Serial.print(">FFT:");
-        Serial.println(dft[i]);
-    }
-    Serial.println();
+    // for (unsigned int i = 0; i < N; ++i) {
+    //     Serial.print(">FFT:");
+    //     Serial.println(dft[i]);
+    // }
+    // Serial.println();
 }
 
 double DFT::percentageInFrequencyRange() {
@@ -55,8 +55,8 @@ double DFT::getIntensityRange() {
 
 // Plot the FFT data using teleplot
 void DFT::plotData() {
-    for (unsigned int k = 0; k < N; ++k) {
-        Serial.print(">FFT");
-        Serial.println(dft[k]);
-    }
+    // for (unsigned int k = 0; k < N; ++k) {
+    //     Serial.print(">FFT");
+    //     Serial.println(dft[k]);
+    // }
 }

@@ -19,7 +19,9 @@ void lightNeoPixel(uint8_t pixel, uint8_t color) {
         break;
 
         default:
-            Serial.println("Invalid color entered.");
+            CircuitPlayground.setPixelColor(pixel, 255, 0, 0);
+            break;
+            // Serial.println("Invalid color entered.");
     }
 }
 
@@ -52,7 +54,7 @@ void yellowRedPattern(uint8_t num_red) {
 
 void displayPercent(double frequency, double intensity){
     if(frequency > 100) {
-        Serial.println("Frequency is greater than 100%.");
+        // Serial.println("Frequency is greater than 100%.");
         return;
     }
     CircuitPlayground.setBrightness(30 + (225 * (intensity / 100)));

@@ -15,7 +15,7 @@ private:
     void recursiveDFT();
 public:
     // Constructor
-    DFT(int size, double* input, int samplingRate);
+    DFT(const int size, volatile double* input, int samplingRate);
 
     double percentageInFrequencyRange();
 
