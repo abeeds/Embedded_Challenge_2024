@@ -71,9 +71,10 @@ void loop() {
 
     double totalPower = 0;
     double targetPower = 0;
+    double targetIntensity = 0; 
     double frequencyResolution = 200.0 / n; // Sampling rate divided by number of samples
 
-    for(int j = 0; j < n / 2; j++) { // Only need to consider half the spectrum due to symmetry in real signals
+    for(int j = 1; j < n / 2; j++) { // Only need to consider half the spectrum due to symmetry in real signals
       double frequency = j * frequencyResolution;
       double power = accelerometerData[j] * accelerometerData[j];
 
@@ -81,13 +82,18 @@ void loop() {
 
       if(frequency >= 3 && frequency <= 8) {
         targetPower += power;
+        targetIntensity += power;
       }
     }
 
     double percentage = (targetPower / totalPower) * 100;
+    double intensity = (min(targetIntensity / 1000, 100));
 
     Serial.print("Percentage of power in 3-8 Hz range: ");
-    Serial.println(percentage);
+    Serial.print(percentage);
+    Serial.print("%");
+    Serial.print(" and intensity of that 3-8Hz range:");
+    Serial.println(intensity);
 
     for(int j = 0; j < n; j++) {
       accelerometerData[j] = 0;
@@ -99,7 +105,7 @@ void loop() {
     // double intensity_range = dft.getIntensityRange();
     // Serial.print(" ");
    // Serial.println(frequency_range);
-    //displayPercent(frequency_range, intensity_range);
+    displayPercent(percentage, intensity);
 
     // Graph the FFT data using teleplot
     // dft.plotData();

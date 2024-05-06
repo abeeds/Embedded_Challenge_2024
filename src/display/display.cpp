@@ -57,7 +57,7 @@ void displayPercent(double frequency, double intensity){
         // Serial.println("Frequency is greater than 100%.");
         return;
     }
-    CircuitPlayground.setBrightness(30 + (225 * (intensity / 100)));
+    CircuitPlayground.setBrightness(5 + (80 * (intensity / 100)));
 
     uint8_t val = frequency / 5;
     if(val < 11) {
