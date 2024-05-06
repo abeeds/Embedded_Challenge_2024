@@ -7,7 +7,7 @@
 volatile int i = 0;
 const int n = 128;
 double accelerometerData[n];
-
+double imaginaryAccelerometerData[n];
 
 // write function declarations here:
 float calculateNetAcceleration(float X, float Y, float Z);
@@ -64,7 +64,35 @@ void loop() {
     // Disable the Timer interrupt
     TIMSK0 &= ~(1 << OCIE0A);
 
-    ArduinoFFT<double> FFT(accelerometerData, nullptr, n, 200);
+    ArduinoFFT<double> FFT(accelerometerData, imaginaryAccelerometerData, n, 200);
+    FFT.windowing(FFTWindow::Rectangle, FFTDirection::Forward);	/* Weigh data */
+    FFT.compute(FFTDirection::Forward); /* Compute FFT */
+    FFT.complexToMagnitude();
+
+    double totalPower = 0;
+    double targetPower = 0;
+    double frequencyResolution = 200.0 / n; // Sampling rate divided by number of samples
+
+    for(int j = 0; j < n / 2; j++) { // Only need to consider half the spectrum due to symmetry in real signals
+      double frequency = j * frequencyResolution;
+      double power = accelerometerData[j] * accelerometerData[j];
+
+      totalPower += power;
+
+      if(frequency >= 3 && frequency <= 8) {
+        targetPower += power;
+      }
+    }
+
+    double percentage = (targetPower / totalPower) * 100;
+
+    Serial.print("Percentage of power in 3-8 Hz range: ");
+    Serial.println(percentage);
+
+    for(int j = 0; j < n; j++) {
+      accelerometerData[j] = 0;
+      imaginaryAccelerometerData[j] = 0;
+    }
     //Serial.println(i);
     // DFT dft(n, accelerometerData, SR);
     // double frequency_range = dft.percentageInFrequencyRange();
