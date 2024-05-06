@@ -3,8 +3,8 @@
 
 DFT::DFT(const int size, volatile double* inputArray, int samplingRate) {
     N = size;
-    for (int i = 0; i < N; ++i) {
-        input[i] = inputArray[i];
+    for (int s = 0; s < N; ++s) {
+        input[s] = inputArray[s];
     }
     recursiveDFT();
 }
@@ -13,10 +13,10 @@ void DFT::recursiveDFT() {
     for (int k = 0; k < N; ++k) {
         dftr[k] = 0;
         dfti[k] = 0;
-        for (int n = 0; n < N; ++n) {
-            double theta = 2 * M_PI * n * k / N;
-            dftr[k] += input[n] * cos(theta);
-            dfti[k] -= input[n] * sin(theta);
+        for (int j = 0; j < N; ++j) {
+            double theta = 2 * M_PI * j * k / N;
+            dftr[k] += input[j] * cos(theta);
+            dfti[k] -= input[j] * sin(theta);
         }
         dft[k] = sqrt(sq(dftr[k]) + sq(dfti[k])) * samplingRate / N;
     }
@@ -36,6 +36,7 @@ double DFT::percentageInFrequencyRange() {
         }
     }
     double percentage = 100.0 * count / N;
+    Serial.println(percentage);
     return percentage;
 }
 
