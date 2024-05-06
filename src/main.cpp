@@ -28,7 +28,7 @@ void setup() {
 }
 
 
-ISR(TIMER0_COMPA_vect) {
+ISR(TIMER3_COMPA_vect) {
   // Serial.println("HI");
   // This service routine will be called every 50 ms
   // We will use this to sample the accelerometer data
@@ -90,23 +90,31 @@ float calculateNetAcceleration(float X, float Y, float Z) {
 
 
 void setupTimer() {
-  TCCR0A = 0;
+  // TCCR0A = 0;
   // Setup TCCR0A register
-  TCCR0A = (1 << WGM01);
+  // TCCR0A = (1 << WGM01);
+
+  TCCR3A, TCCR3B = 0;
+
+  TCCR3B = (1 << WGM32) | (1 << CS32) | (1 << CS30); // WGM
   // Normal Port Operation -> COM0A1 = 0, COM0A0 = 0
   // Disconnect OC0B - Normal Port operation -> COM0B1 = 0, COM0B0 = 0
   // CTC mode with OCRA as TOP -> WGM02 = 0, WGM01 = 1, WGM00 = 0
   
-  TCCR0B = 0;
+  // TCCR0B = 0;
   // Setup TCCR0B register
-  TCCR0B = (1 << CS02) | (1 << CS00);
+  // TCCR0B = (1 << CS02) | (1 << CS00);
+  
   // FOC0A = 0, FOC0B = 0
   // WGM02 = 0
   // Use a clock prescaler of 1024 -> CS02 = 1, CS01 = 0, CS00 = 1
 
   // Setup the OCR0A register
-  OCR0A = 77; // 10 ms
+  // OCR0A = 77; // 10 ms
+
+  OCR3A = 77;
 
   // Setup the TIMSK0 register
-  TIMSK0 |= (1 << OCIE0A) | (1 << TOIE0);
+  TIMSK3 |=  (1 << OCIE3A) | (1 << TOIE3);
+  // TIMSK0 |= (1 << OCIE0A) | (1 << TOIE0);
 }
