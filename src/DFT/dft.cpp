@@ -3,17 +3,17 @@
 
 DFT::DFT(const int size, volatile double* inputArray, int samplingRate) {
     N = size;
-    for (unsigned int i = 0; i < N; ++i) {
+    for (int i = 0; i < N; ++i) {
         input[i] = inputArray[i];
     }
     recursiveDFT();
 }
 
 void DFT::recursiveDFT() {
-    for (unsigned int k = 0; k < N; ++k) {
+    for (int k = 0; k < N; ++k) {
         dftr[k] = 0;
         dfti[k] = 0;
-        for (unsigned int n = 0; n < N; ++n) {
+        for (int n = 0; n < N; ++n) {
             double theta = 2 * M_PI * n * k / N;
             dftr[k] += input[n] * cos(theta);
             dfti[k] -= input[n] * sin(theta);
@@ -29,7 +29,7 @@ void DFT::recursiveDFT() {
 
 double DFT::percentageInFrequencyRange() {
     unsigned int count = 0;
-    for (unsigned int k = 0; k < N; ++k) {
+    for (int k = 0; k < N; ++k) {
         double frequency = dft[k];
         if (frequency >= LOWERBOUND && frequency <= UPPERBOUND) {
             ++count;
@@ -43,7 +43,7 @@ double DFT::percentageInFrequencyRange() {
 double DFT::getIntensityRange() {
     double intensity = 0;
     double total_intensity = 0;
-    for (unsigned int k = 0; k < N; ++k) {
+    for (int k = 0; k < N; ++k) {
         double frequency = dft[k];
         if (frequency >= LOWERBOUND && frequency <= UPPERBOUND) {
             intensity += abs(dft[k]);
