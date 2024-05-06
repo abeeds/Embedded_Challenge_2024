@@ -69,6 +69,7 @@ ISR(TIMER0_COMPA_vect) {
 void loop() {
 
   if(sample_counter == sample_n && !checkedForParkinsons){
+    CircuitPlayground.playTone(440, 250);
     TIMSK0 &= ~(1 << OCIE0A);
     for(int j = 0; j < sample_n; j++){
       percentage_average += samples_percentage[j];
