@@ -8,6 +8,13 @@ volatile int i = 0;
 const int n = 128;
 double accelerometerData[n];
 double imaginaryAccelerometerData[n];
+const int sample_n = 300;
+int sample_counter = 0;
+int samples_percentage[sample_n];
+int samples_intensity[sample_n];
+bool checkedForParkinsons = false;
+double percentage_average = 0;
+double intensity_average = 0;
 
 // write function declarations here:
 float calculateNetAcceleration(float X, float Y, float Z);
@@ -60,7 +67,22 @@ ISR(TIMER0_COMPA_vect) {
 }
 
 void loop() {
-  if(i == n) {
+
+  if(sample_counter == sample_n && !checkedForParkinsons){
+    TIMSK0 &= ~(1 << OCIE0A);
+    for(int j = 0; j < sample_n; j++){
+      percentage_average += samples_percentage[j];
+      intensity_average += samples_intensity[j];
+    }
+    percentage_average /= (double)sample_n;
+    intensity_average /= (double)sample_n;
+    Serial.println(percentage_average);
+    Serial.println(intensity_average);
+    displayPercent(percentage_average, intensity_average, true);
+    checkedForParkinsons = true;
+  }
+
+  if(i == n && sample_counter < sample_n && !checkedForParkinsons) {
     // Disable the Timer interrupt
     TIMSK0 &= ~(1 << OCIE0A);
 
@@ -89,29 +111,23 @@ void loop() {
     double percentage = (targetPower / totalPower) * 100;
     double intensity = (min(targetIntensity / 1000, 100));
 
-    Serial.print("Percentage of power in 3-8 Hz range: ");
+    Serial.print(sample_counter);
+    Serial.print(" Percentage of power in 3-8 Hz range: ");
     Serial.print(percentage);
     Serial.print("%");
     Serial.print(" and intensity of that 3-8Hz range:");
     Serial.println(intensity);
 
+    samples_percentage[sample_counter] = percentage;
+    samples_intensity[sample_counter] = intensity;
+
     for(int j = 0; j < n; j++) {
       accelerometerData[j] = 0;
       imaginaryAccelerometerData[j] = 0;
     }
-    //Serial.println(i);
-    // DFT dft(n, accelerometerData, SR);
-    // double frequency_range = dft.percentageInFrequencyRange();
-    // double intensity_range = dft.getIntensityRange();
-    // Serial.print(" ");
-   // Serial.println(frequency_range);
-    displayPercent(percentage, intensity);
-
-    // Graph the FFT data using teleplot
-    // dft.plotData();
+    displayPercent(percentage, intensity, false);
     i = 0;
-
-    // Resetting the Timer interrupt
+    sample_counter++;
     TIMSK0 |= (1 << OCIE0A);
   }
 }
