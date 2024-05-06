@@ -1,13 +1,12 @@
 #include <Arduino.h>
 #include <Adafruit_CircuitPlayground.h>
+#include <arduinoFFT.h>
 #include "./display/display.h"
 #include "./DFT/dft.h"
 
 volatile int i = 0;
-const int windowSize = 3; // Have a window of 3 seconds to collect data
-const int SR = 100; // Sample rate of 100 Hz
-const int n = windowSize * SR;
-volatile double accelerometerData[windowSize * SR];
+const int n = 128;
+double accelerometerData[n];
 
 
 // write function declarations here:
@@ -65,6 +64,7 @@ void loop() {
     // Disable the Timer interrupt
     TIMSK0 &= ~(1 << OCIE0A);
 
+    ArduinoFFT<double> FFT(accelerometerData, nullptr, n, 200);
     //Serial.println(i);
     // DFT dft(n, accelerometerData, SR);
     // double frequency_range = dft.percentageInFrequencyRange();
@@ -98,13 +98,13 @@ void setupTimer() {
   
   TCCR0B = 0;
   // Setup TCCR0B register
-  TCCR0B = (1 << CS02) | (1 << CS00);
+  TCCR0B = (1 << CS02);
   // FOC0A = 0, FOC0B = 0
   // WGM02 = 0
   // Use a clock prescaler of 1024 -> CS02 = 1, CS01 = 0, CS00 = 1
 
   // Setup the OCR0A register
-  OCR0A = 77; // 10 ms
+  OCR0A = 155; // 5 ms
 
   // Setup the TIMSK0 register
   TIMSK0 |= (1 << OCIE0A) | (1 << TOIE0);
