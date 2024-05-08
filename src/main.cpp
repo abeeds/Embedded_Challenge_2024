@@ -2,7 +2,6 @@
 #include <Adafruit_CircuitPlayground.h>
 #include <arduinoFFT.h>
 #include "./display/display.h"
-#include "./DFT/dft.h"
 
 /*
 Group Members:
