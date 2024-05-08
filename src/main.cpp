@@ -4,6 +4,13 @@
 #include "./display/display.h"
 #include "./DFT/dft.h"
 
+/*
+Group Members:
+  Kunal Gupta - kg3163
+  Shahria Abeed - sa5680
+  Shubh Savani - sms9977
+*/
+
 volatile int i = 0;
 const int n = 128;
 double accelerometerData[n];
@@ -35,35 +42,16 @@ void setup() {
 
 
 ISR(TIMER0_COMPA_vect) {
-  // Serial.println("HI");
   // This service routine will be called every 50 ms
   // We will use this to sample the accelerometer data
   float X = CircuitPlayground.motionX();
   float Y = CircuitPlayground.motionY();
   float Z = CircuitPlayground.motionZ();
 
-  // float X = 1.0;
-  // float Y = 2.0;
-  // float Z = 3.0;
-
-  // Serial.print(X);
-  // Serial.print(",");
-  // Serial.print(Y);
-  // Serial.print(",");
-  // Serial.println(Z);
-  // delay(1000);
-
   double netAcceleration = calculateNetAcceleration(X, Y, Z);
-
   accelerometerData[i] = netAcceleration;
 
   i++;
-  // Serial.print(",");
-  // Serial.print(Y);
-  // Serial.print(",");
-  // Serial.println(Z);
-
-  //also isnt SR should be 1 / SR * 1000
 }
 
 void loop() {
@@ -129,6 +117,8 @@ void loop() {
     displayPercent(percentage, intensity, false);
     i = 0;
     sample_counter++;
+
+    // Enable Timer Interrupt
     TIMSK0 |= (1 << OCIE0A);
   }
 }
