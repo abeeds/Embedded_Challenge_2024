@@ -54,6 +54,7 @@ ISR(TIMER0_COMPA_vect) {
 void loop() {
   // Calculates the final average
   if(sample_counter == sample_n && !checkedForParkinsons){
+    //play sound when finished
     CircuitPlayground.playTone(440, 2000);
     TIMSK0 &= ~(1 << OCIE0A);  // Disable the Timer interrupt
     
