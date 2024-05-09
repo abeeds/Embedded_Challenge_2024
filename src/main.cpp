@@ -54,7 +54,7 @@ ISR(TIMER0_COMPA_vect) {
 void loop() {
   // Calculates the final average
   if(sample_counter == sample_n && !checkedForParkinsons){
-    CircuitPlayground.playTone(440, 250);
+    CircuitPlayground.playTone(440, 2000);
     TIMSK0 &= ~(1 << OCIE0A);  // Disable the Timer interrupt
     
     // record sum of all power and intensities recorded
@@ -78,7 +78,6 @@ void loop() {
 
   // Calculates data for each sample
   if(i == n && sample_counter < sample_n && !checkedForParkinsons) {
-    CircuitPlayground.playTone(440, 250);
     TIMSK0 &= ~(1 << OCIE0A);  // Disable the Timer interrupt
 
     ArduinoFFT<double> FFT(accelerometerData, imaginaryAccelerometerData, n, 200);
