@@ -55,7 +55,7 @@ void loop() {
   // Calculates the final average
   if(sample_counter == sample_n && !checkedForParkinsons){
     //play sound when finished
-    CircuitPlayground.playTone(440, 2000);
+    CircuitPlayground.playTone(440, 4000);
     TIMSK0 &= ~(1 << OCIE0A);  // Disable the Timer interrupt
     
     // record sum of all power and intensities recorded
@@ -98,7 +98,8 @@ void loop() {
 
       totalPower += power;
 
-      if(frequency >= 3 && frequency <= 8) {
+      // record power if in Parkinson's frequency range
+      if(frequency >= 3 && frequency <= 6) {
         targetPower += power;
         targetIntensity += power;
       }
