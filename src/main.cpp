@@ -11,13 +11,13 @@ Group Members:
 */
 
 volatile int i = 0;
-const int n = 128;
+const int n = 64;
 double accelerometerData[n];
 double imaginaryAccelerometerData[n];
-const int sample_n = 100;
+const int sample_n = 400;
 int sample_counter = 0;
-int samples_percentage[sample_n];
-int samples_intensity[sample_n];
+uint8_t samples_percentage[sample_n];
+uint8_t samples_intensity[sample_n];
 bool checkedForParkinsons = false;
 double percentage_average = 0;
 double intensity_average = 0;
@@ -55,6 +55,7 @@ ISR(TIMER0_COMPA_vect) {
 
 void loop() {
 
+  // 
   if(sample_counter == sample_n && !checkedForParkinsons){
     CircuitPlayground.playTone(440, 250);
     TIMSK0 &= ~(1 << OCIE0A);
@@ -141,7 +142,7 @@ void setupTimer() {
   TCCR0B = (1 << CS02);
   // FOC0A = 0, FOC0B = 0
   // WGM02 = 0
-  // Use a clock prescaler of 1024 -> CS02 = 1, CS01 = 0, CS00 = 1
+  // Use a clock prescaler of 256 -> CS02 = 1, CS01 = 0, CS00 = 0
 
   // Setup the OCR0A register
   OCR0A = 155; // 5 ms
