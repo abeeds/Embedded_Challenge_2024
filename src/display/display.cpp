@@ -58,7 +58,6 @@ void displayPercent(double frequency, double intensity, bool final = false){
         return;
     }
     int brightness = 1 + (int)(254 * (intensity / 100.0));
-    Serial.print(brightness);
     if(final)brightness = 10 + (int)(120 * (intensity / 100.0));
     CircuitPlayground.setBrightness(brightness);
 

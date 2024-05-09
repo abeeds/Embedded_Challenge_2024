@@ -10,15 +10,15 @@ Group Members:
   Shubh Savani - sms9977
 */
 
-volatile int i = 0;
-const int n = 64;
+volatile int i = 0;  // counter for sampling acceleration data
+const int n = 64;    // size of acceleration data array
 double accelerometerData[n];
 double imaginaryAccelerometerData[n];
-const int sample_n = 400;
+const int sample_n = 400;   // number of samples recorded
 int sample_counter = 0;
 uint8_t samples_percentage[sample_n];
 uint8_t samples_intensity[sample_n];
-bool checkedForParkinsons = false;
+bool checkedForParkinsons = false;    // true if done collecting samples
 double percentage_average = 0;
 double intensity_average = 0;
 
@@ -30,18 +30,16 @@ void setupTimer();
 void setup() {
   sei();
   Serial.begin(9600);
-  // while (!Serial);
-  Serial.println("Hello, world!");
   CircuitPlayground.begin();
 
-  // Setup Timer 0 to generate an interrupt every 10 miliseconds
+  // Setup Timer 0 to generate an interrupt every 5 miliseconds
   // This will be used to sample the accelerometer data
   setupTimer();
 }
 
 
 ISR(TIMER0_COMPA_vect) {
-  // This service routine will be called every 50 ms
+  // This service routine will be called every 5 ms
   // We will use this to sample the accelerometer data
   float X = CircuitPlayground.motionX();
   float Y = CircuitPlayground.motionY();
@@ -54,26 +52,33 @@ ISR(TIMER0_COMPA_vect) {
 }
 
 void loop() {
-
-  // 
+  // Calculates the final average
   if(sample_counter == sample_n && !checkedForParkinsons){
     CircuitPlayground.playTone(440, 250);
-    TIMSK0 &= ~(1 << OCIE0A);
+    TIMSK0 &= ~(1 << OCIE0A);  // Disable the Timer interrupt
+    
+    // record sum of all power and intensities recorded
     for(int j = 0; j < sample_n; j++){
       percentage_average += samples_percentage[j];
       intensity_average += samples_intensity[j];
     }
+
+    // calculate average
     percentage_average /= (double)sample_n;
     intensity_average /= (double)sample_n;
+
+    Serial.print("Final Power: ");
     Serial.println(percentage_average);
+    Serial.print("Final Intensity: ");
     Serial.println(intensity_average);
+
     displayPercent(percentage_average, intensity_average, true);
-    checkedForParkinsons = true;
+    checkedForParkinsons = true;    // done collecting samples
   }
 
+  // Calculates data for each sample
   if(i == n && sample_counter < sample_n && !checkedForParkinsons) {
-    // Disable the Timer interrupt
-    TIMSK0 &= ~(1 << OCIE0A);
+    TIMSK0 &= ~(1 << OCIE0A);  // Disable the Timer interrupt
 
     ArduinoFFT<double> FFT(accelerometerData, imaginaryAccelerometerData, n, 200);
     FFT.windowing(FFTWindow::Rectangle, FFTDirection::Forward);	/* Weigh data */
@@ -85,6 +90,7 @@ void loop() {
     double targetIntensity = 0; 
     double frequencyResolution = 200.0 / n; // Sampling rate divided by number of samples
 
+    // record frequency and power
     for(int j = 1; j < n / 2; j++) { // Only need to consider half the spectrum due to symmetry in real signals
       double frequency = j * frequencyResolution;
       double power = accelerometerData[j] * accelerometerData[j];
@@ -97,6 +103,7 @@ void loop() {
       }
     }
 
+    // convert power and intensity to percents
     double percentage = (targetPower / totalPower) * 100;
     double intensity = (min(targetIntensity / 1000, 100));
 
@@ -114,12 +121,13 @@ void loop() {
       accelerometerData[j] = 0;
       imaginaryAccelerometerData[j] = 0;
     }
+
+    // light neopixels based on recorded data
     displayPercent(percentage, intensity, false);
     i = 0;
     sample_counter++;
 
-    // Enable Timer Interrupt
-    TIMSK0 |= (1 << OCIE0A);
+    TIMSK0 |= (1 << OCIE0A);  // Enable Timer Interrupt
   }
 }
 
