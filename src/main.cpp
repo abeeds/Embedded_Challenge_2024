@@ -14,7 +14,7 @@ volatile int i = 0;
 const int n = 128;
 double accelerometerData[n];
 double imaginaryAccelerometerData[n];
-const int sample_n = 300;
+const int sample_n = 100;
 int sample_counter = 0;
 int samples_percentage[sample_n];
 int samples_intensity[sample_n];
